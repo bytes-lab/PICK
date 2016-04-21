@@ -45,6 +45,8 @@ INSTALLED_APPS = [
 
     'allauth.socialaccount.providers.instagram',
     'allauth.socialaccount.providers.twitter',
+
+    'order'
 ]
 
 SITE_ID = 1
@@ -164,4 +166,4 @@ DEFAULT_FROM_EMAIL = 'jason50010001@gmail.com'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-# LOGIN_REDIRECT_URL = "/file_list/"
+LOGIN_REDIRECT_URL = "/orders/"
