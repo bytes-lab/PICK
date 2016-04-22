@@ -11,12 +11,4 @@ class OrderForm(ModelForm):
     class Meta:
 		model = Order
 		exclude = ('owner', 'dropoff_addr', 'key', 'status')
-
-        # widgets = {
-        #     'content': forms.TextInput(
-        #         attrs={'class': 'form-control'}
-        #     ),
-        #     'comments': forms.TextInput(
-        #         attrs={'class': 'form-control'}
-        #     ),
-        # }		
+	

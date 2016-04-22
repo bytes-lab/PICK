@@ -1,11 +1,14 @@
 import hashlib, datetime, random
+import requests
+import json
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from django.shortcuts import render
-
+from django.core.exceptions import ObjectDoesNotExist
 from twilio.rest import TwilioRestClient 
 
 from .models import *
@@ -34,16 +37,68 @@ def new_order(request):
 			# send SMS to confirm 
 			client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
 			 
-			client.messages.create(
-				to=post.phone, 
-				from_="+12025688404", 
-				body="Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (post.id, post.key),  
-			)
-
+			# client.messages.create(
+			# 	to=post.phone, 
+			# 	from_="+12025688404", 
+			# 	body="Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (post.id, post.key),  
+			# )
+			print "Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (post.id, post.key), "#########3"
 			return HttpResponseRedirect('/')
 
 	context = {
 		'orderform': form,
 	}
 	return render(request, 'orders.html', context)
+
+def confirm_order(request, id, key):
+	try:
+		order = Order.objects.get(id=id, key=key)
+	
+		error_msg = ''
+		if request.method == 'POST':
+			if request.POST.get('dropoff_addr'):
+				order.dropoff_addr=request.POST.get('dropoff_addr')
+				order.save()
+				
+				# send delivery request api
+				send_delivery_request(order)
+			else:
+				error_msg = "You should provide a valid drop off address!"
+
+		context = {
+			'id': id,
+			'key': key,
+			'orderform': OrderForm(initial=model_to_dict(order)),
+			'error_msg': error_msg,
+		}
+
+		return render(request, 'confirm_order.html', context)		
+	except ObjectDoesNotExist:
+		return HttpResponse('Your link is invalid or expired!')	
+
+# web hook for order finish
+def order_completed(request):
+	print 'Order is successfully finished'
+	print request.json()
+
+def send_delivery_request(order):
+	body = {
+		"apiKey": "622a6564-6c73-4350-94f5-072a406fd4b7",
+		"booking":{
+			"pickupDetail": {
+				"name": "Rupert",
+				"phone": "1234567890",
+				"address": order.pickup_addr
+			},
+			"dropoffDetail": {
+				"name": order.contact_name,
+				"phone": order.phone,
+				"address": order.dropoff_addr
+			}
+		}
+	}            
+
+	req = requests.post(url='https://app.getswift.co/api/v2/quotes', headers={"Content-Type": "application/json"}, data=json.dumps(body))
+
+	print req.json()		
 
