@@ -4,7 +4,7 @@ from order.models import ITEMS
 
 class SenderForm(forms.ModelForm):
     """
-    Form for registering a new account.
+    Form for registering a new sender.
     """
     email = forms.EmailField(widget=forms.EmailInput(attrs={'required': True, 'readonly':True, 'class': 'form-control'}), label="Email Address")
     phone = forms.RegexField(widget=forms.TextInput(attrs={'required': True, 'class': 'form-control'}), regex=r'^\d{9,15}$', 

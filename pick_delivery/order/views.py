@@ -112,7 +112,6 @@ def send_delivery_request(order):
 		}
 	}            
 
-	print body, '##################'
 	res = requests.post(url=url, headers=header, data=json.dumps(body))
 
 	print res.json()		
