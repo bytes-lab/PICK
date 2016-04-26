@@ -25,9 +25,10 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^orders/', order.views.new_order),
+    url(r'^orders/', order.views.order_list),
     url(r'^order_completed /', order.views.order_completed),
     url(r'^order_confirm/(?P<id>\d+)/(?P<key>\w+)/$', order.views.confirm_order),
     url(r'^register_sender/$', sender.views.register_sender),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^docs/', include('rest_framework_swagger.urls')),    
 ]

@@ -19,7 +19,7 @@ Order: which is the shipment (parcel) that is going to be delivered from the sen
 
 The process goes like this :
 1- Sender logs in using one of our apps.
-2- Sender submits a new order (with the specified information bellow).
+2- Sender submits a new order (with the specified information below).
 3- When Order is submitted an sms is sent to the receiver with a link to specify his location.
 4- When receiver submits his/her location delivery job gets submit to the delivery management api(specified above).
 5- When driver completes the job the delivery management will notify our system using a web-hook.
@@ -270,4 +270,4 @@ GetSwift API for delivery (getswift api documentation)
 	    }
 	}
 	            
-
+	

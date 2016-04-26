@@ -4,4 +4,5 @@ Pillow>=3.2.0
 djangorestframework
 markdown
 django-filter
+django-rest-swagger
 twilio

@@ -11,6 +11,11 @@ from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from twilio.rest import TwilioRestClient 
 
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from .serializers import OrderSerializer
 from sender.models import *
 from .models import *
 from .forms import *
@@ -22,43 +27,42 @@ AUTH_TOKEN = "7c41ee1f56e84bd3bb4ecf549cbe6eaf"
 APIKEY_GETSWIFT = "622a6564-6c73-4350-94f5-072a406fd4b7"
 
 
-@login_required
-def new_order(request):
-	if request.method == 'GET':		
+@api_view(['GET', 'POST'])
+def order_list(request):
+	"""
+	List all orders, or create a new order.
+	"""
+	if request.method == 'GET':
 		sender = Sender.objects.get(email=request.user)
 
 		# input extra input for a new sender
 		if sender.phone == None:
 			return HttpResponseRedirect('/register_sender/')
 
-		form = OrderForm(initial={'pickup_addr': sender.address })
-	else:
-		form = OrderForm(request.POST)
-		if form.is_valid():			
-			post = form.save(commit=False)			
-			post.owner = request.user
+		orders = Order.objects.all()
+		serializer = OrderSerializer(orders, many=True)
+		return Response(serializer.data)
+
+	elif request.method == 'POST':
+		serializer = OrderSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.owner = request.user
 
 			# generate security key
 			salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-			post.key = hashlib.sha1(salt+str(post.phone)).hexdigest()
-			post.status = 0
-			post.save()
+			serializer.key = hashlib.sha1(salt+str(serializer.phone)).hexdigest()
+			serializer.status = 0
+			serializer.save()
 
 			# send SMS to confirm 
-			client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
-			 
-			# client.messages.create(
-			# 	to=post.phone, 
-			# 	from_="+12025688404", 
-			# 	body="Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (post.id, post.key),  
-			# )
-			print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (post.id, post.key), "#########3"
-			return HttpResponseRedirect('/')
+			send_SMS(serializer)
 
-	context = {
-		'orderform': form,
-	}
-	return render(request, 'orders.html', context)
+			print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (serializer.id, serializer.key), "#########3"
+
+			serializer.save()
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def confirm_order(request, id, key):
 	try:
@@ -86,10 +90,27 @@ def confirm_order(request, id, key):
 	except ObjectDoesNotExist:
 		return HttpResponse('Your link is invalid or expired!')	
 
-# web hook for order finish
+
 def order_completed(request):
+	'''
+	web hook for order finish
+	'''
 	print 'Order is successfully finished'
 	print request.json()
+
+
+def send_SMS(order):
+	'''
+	send SMS to the customer to confirm the order using twilio
+	'''
+	client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
+	 
+	client.messages.create(
+		to=order.phone, 
+		from_="+12025688404", 
+		body="Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (order.id, order.key),  
+	)
+
 
 def send_delivery_request(order):
 	url = 'https://app.getswift.co/api/v2/quotes'
@@ -113,6 +134,4 @@ def send_delivery_request(order):
 	}            
 
 	res = requests.post(url=url, headers=header, data=json.dumps(body))
-
-	print res.json()		
-
+	# print res.json()		
