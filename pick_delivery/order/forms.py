@@ -4,11 +4,41 @@ from .models import *
 
 
 class OrderForm(ModelForm):
-    phone = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
-        error_messages = {'invalid': "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."})
-	
-
     class Meta:
-		model = Order
-		exclude = ('owner', 'dropoff_addr', 'key', 'status')
-	
+        model = Order
+        fields = ['dropoff_addr', 'pickup_addr', 'contact_name', 'phone', 'pickup_time', 'dropoff_time', 'items'
+            , 'payment_type']
+        widgets = {
+            'dropoff_addr': forms.TextInput(
+                attrs={'required': True, 'class': 'form-control'}
+            ),
+            'pickup_addr': forms.TextInput(
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),
+            'contact_name': forms.TextInput(
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),
+            'phone': forms.TextInput(
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),
+            'pickup_time': forms.TextInput(
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),
+            'dropoff_time': forms.TextInput(
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),        
+            'items': forms.Select(
+                choices=ITEMS,             	
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),        
+            'payment_type': forms.Select(
+                choices=PAYMENT_TYPE,             	            	
+                attrs={'readonly': True, 'class': 'form-control'}
+            ),        
+        }
+        labels = {
+            'dropoff_addr': 'Drop off Address',
+            'pickup_addr': 'Pick up Address',
+            'pickup_time': 'Pick up Time',
+            'dropoff_time': 'Drop off Time',
+        }

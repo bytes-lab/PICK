@@ -26,14 +26,14 @@ STATUS = (
 
 
 class Order(models.Model):
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-	pickup_addr = models.CharField(max_length=250)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="orders")
+	pickup_addr = models.CharField(max_length=250, blank=True, null=True)
 	dropoff_addr = models.CharField(max_length=250, blank=True, null=True)
 	contact_name = models.CharField(max_length=250)
 	phone = models.CharField(max_length=20)
 	pickup_time = models.DateTimeField()
 	dropoff_time = models.DateTimeField()
-	items = models.IntegerField(choices=ITEMS)
+	items = models.IntegerField(choices=ITEMS, null=True)
 	payment_type = models.IntegerField(choices=PAYMENT_TYPE)
 	key = models.CharField(max_length=100)
 	status = models.IntegerField(choices=STATUS, default=0)

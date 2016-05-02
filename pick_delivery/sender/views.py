@@ -20,6 +20,7 @@ def register_sender(request):
 			post.id = sender.id
 			post.password = sender.password
 			post.username = sender.username
+			# post.is_staff = sender.is_staff
 			post.save()
 			return HttpResponseRedirect('/orders/')
 

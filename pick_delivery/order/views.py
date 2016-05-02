@@ -14,7 +14,10 @@ from twilio.rest import TwilioRestClient
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import generics, viewsets
+from rest_framework import permissions
 
+from .permissions import IsOwnerOnly
 from .serializers import OrderSerializer
 from sender.models import *
 from .models import *
@@ -23,67 +26,53 @@ from .forms import *
 # put your twilio credentials here 
 ACCOUNT_SID = "AC20c84dff711e30719413dd2cd9d7469b" 
 AUTH_TOKEN = "7c41ee1f56e84bd3bb4ecf549cbe6eaf" 
-
+# put your swift key
 APIKEY_GETSWIFT = "622a6564-6c73-4350-94f5-072a406fd4b7"
 
 
-@api_view(['GET', 'POST'])
-def order_list(request):
-	"""
-	List all orders, or create a new order.
-	"""
-	if request.method == 'GET':
-		sender = Sender.objects.get(email=request.user)
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
 
-		# input extra input for a new sender
-		if sender.phone == None:
-			return HttpResponseRedirect('/register_sender/')
+    serializer_class = OrderSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly,)
 
-		orders = Order.objects.all()
-		serializer = OrderSerializer(orders, many=True)
-		return Response(serializer.data)
+    def perform_create(self, serializer):
+		sender = Sender.objects.get(email=self.request.user)
+		pickup_addr = self.request.POST.get('pickup_addr') or sender.address
+		items = self.request.POST.get('items') or sender.package_type
 
-	elif request.method == 'POST':
-		serializer = OrderSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.owner = request.user
+		salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+		key = hashlib.sha1(salt+self.request.POST.get('phone')).hexdigest()
 
-			# generate security key
-			salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-			serializer.key = hashlib.sha1(salt+str(serializer.phone)).hexdigest()
-			serializer.status = 0
-			serializer.save()
+		order = serializer.save(owner=self.request.user, pickup_addr=pickup_addr, items=items, key=key)
+		# send SMS to confirm 
+		send_SMS(order)
 
-			# send SMS to confirm 
-			send_SMS(serializer)
+		print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (order.id, order.key), "#########3"
 
-			print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (serializer.id, serializer.key), "#########3"
-
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        return Order.objects.filter(owner=self.request.user)
 
 
 def confirm_order(request, id, key):
 	try:
 		order = Order.objects.get(id=id, key=key)
 	
-		error_msg = ''
 		if request.method == 'POST':
 			if request.POST.get('dropoff_addr'):
 				order.dropoff_addr=request.POST.get('dropoff_addr')
-				order.save()
-				
+				order.save()				
 				# send delivery request api
 				send_delivery_request(order)
-			else:
-				error_msg = "You should provide a valid drop off address!"
 
+		order.phone = order.owner.phone		
 		context = {
 			'id': id,
 			'key': key,
 			'orderform': OrderForm(initial=model_to_dict(order)),
-			'error_msg': error_msg,
 		}
 
 		return render(request, 'confirm_order.html', context)		
