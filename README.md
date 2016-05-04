@@ -270,5 +270,79 @@ GetSwift API for delivery (getswift api documentation)
 	    }
 	}
 	            
-	
-https://developers.google.com/maps/documentation/geocoding/intro#reverse-example	
+
+How to get address from the map
+
+	Leaflet.js	
+	https://developers.google.com/maps/documentation/geocoding/intro#reverse-example	
+
+Some endpoints for login
+
+	Basic
+
+	    /rest-auth/login/ (POST)
+
+	            username (string)
+	            email (string)
+	            password (string)
+
+	    /rest-auth/logout/ (POST)
+
+	            token
+
+	    /rest-auth/password/reset/ (POST)
+
+	            email
+
+	    /rest-auth/password/reset/confirm/ (POST)
+
+	            uid
+	            token
+	            new_password1
+	            new_password2
+
+	        Note
+
+	        uid and token are sent in email after calling /rest-auth/password/reset/
+
+	    /rest-auth/password/change/ (POST)
+
+	            new_password1
+	            new_password2
+	            old_password
+	    /rest-auth/user/ (GET)
+
+	    /rest-auth/user/ (PUT/PATCH)
+
+	            username
+	            first_name
+	            last_name
+	            email
+
+	Registration
+
+	    /rest-auth/registration/ (POST)
+
+	            username
+	            password1
+	            password2
+	            email
+
+	    /rest-auth/registration/verify-email/ (POST)
+
+	            key
+
+
+	Social Media Authentication
+
+
+	    /rest-auth/instagram/ (POST)
+
+	            access_token
+	            code
+
+	    /rest-auth/twitter/ (POST)
+
+	            access_token
+	            token_secret
+

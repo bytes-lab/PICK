@@ -1,0 +1,47 @@
+
+- signup
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email": "user2@test.com", "password1": "newfirst", "password2": "newfirst", "username": "user2"}' http://localhost/rest-auth/registration/
+
+- email verification
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"key": "502ec68afcef0bd839db47f40cf0a8ea1803c1a5"}' http://localhost/rest-auth/registration/verify-email/
+
+/account/confirm-email/xkmg3lrfncn5czkzz77l2zefelceudzrjmo5daqhbuv2cayia1a192xdpf5fxy2p/   (same)
+
+- login
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"username":"user1", "password":"newfirst", "email":""}' http://localhost/rest-auth/login/
+
+: api-auth/login
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"username":"root", "password":"newfirst", "csrfmiddlewaretoken": "HW4AYvT74z1bpXB8sczA1aVynDyGTGDF"}' http://localhost/api-auth/login/
+
+: accounts/login
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"login":"admin@waff.com", "password":"newfirst", "csrfmiddlewaretoken": "HW4AYvT74z1bpXB8sczA1aVynDyGTGDF"}' http://localhost/accounts/login/
+
+
+http -a root:newfirst POST http://127.0.0.1:8000/snippets/
+
+-- does not work
+curl -H "Accept: application/json" -H "Content-type: application/json" -X GET -d '{"email":"admin@waff.com", "password":"newfirst", }' http://localhost/api/orders/
+
+--  work
+curl -H "Content-type: application/json" -X GET -u root:newfirst http://localhost/api/orders/
+
+curl -H "Authorization: Token 62ac6731f69d557995bb31c050e2fe0a5e5eddc2" -X GET http://127.0.0.1:800/rest-auth/user/
+
+curl  -X GET -u user1:newfirst http://localhost:800/rest-auth/user/
+
+
+*** Email Mandatory ***
+
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email": "user5@test.com", "password1": "newfirst", "password2": "newfirst"}' http://localhost/rest-auth/registration/
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email":"user5@test.com", "password":"newfirst"}' http://localhost/rest-auth/login/
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"key": "n7b6lblrzghns5y0tptbr0asegasemaujeoux6pqdnu9kl2wwn5cbqgn83yv7wvx"}' http://localhost/rest-auth/registration/verify-email/
+
+curl -H "Accept: application/json" -X GET http://api.pick.sam/accounts/instagram/login/?process=login
+
+curl -H "Authorization: Token 3d26fa5a3230dd009b67c848e810245e8fb2ea09" -X GET http://127.0.0.1/rest-auth/user/
