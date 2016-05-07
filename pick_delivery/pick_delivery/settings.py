@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -56,9 +57,11 @@ INSTALLED_APPS = [
 
     'order',
     'sender',
+    
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
+
     'rest_auth',
     'rest_auth.registration',           
 ]
@@ -78,7 +81,6 @@ MIDDLEWARE_CLASSES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
-    'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -99,8 +101,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'allauth.account.context_processors.account',
-                # 'allauth.socialaccount.context_processors.socialaccount'
             ],
         },
     },
@@ -191,5 +191,10 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'jason50010001@gmail.com'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-LOGIN_REDIRECT_URL = "/orders/"
+
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/email_verified/"
+LOGIN_REDIRECT_URL = "/email_verified/"
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'sender.serializers.UserDetailsSerializer',
+}

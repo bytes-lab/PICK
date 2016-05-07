@@ -5,8 +5,8 @@ from django.contrib.auth.models import AbstractUser
 from order.models import ITEMS
 
 GENDER = (
-	(0, 'Male'),
-	(1, 'Female')
+	('Male', 'Male'),
+	('Female', 'Female')
 )
 
 class Sender(AbstractUser):
@@ -14,10 +14,10 @@ class Sender(AbstractUser):
     Custom user class - Sender.
     """
     address = models.CharField(max_length=300)		# default location
-    phone = models.CharField(max_length=50, null=True, blank=True)
+    phone = models.CharField(max_length=50)
     store_url = models.CharField(max_length=50)
-    package_type = models.IntegerField(choices=ITEMS, null=True, blank=True)
-    gender = models.IntegerField(choices=GENDER, null=True, blank=True)
+    package_type = models.CharField(choices=ITEMS, max_length=50)
+    gender = models.CharField(choices=GENDER, max_length=50)
 
     def __unicode__(self):
         return self.email

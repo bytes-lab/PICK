@@ -46,6 +46,9 @@ curl -H "Accept: application/json" -X GET http://api.pick.sam/accounts/instagram
 
 curl -H "Authorization: Token 3d26fa5a3230dd009b67c848e810245e8fb2ea09" -X GET http://127.0.0.1/rest-auth/user/
 
+- orders
+curl -H "Authorization: Token 36c4debb62b1e6395e5626243342eaac6149f9c9" -X GET http://127.0.0.1/api/orders/
+
 - Delivery testing
 
 73d53511-d156-4621-909f-e526f675701d

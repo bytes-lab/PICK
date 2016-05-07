@@ -28,8 +28,15 @@ from .forms import *
 
 class OrderViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+    Creates/Returns Sender's order details in JSON format.
+
+    Accepts the following GET parameters: token\n
+    Accepts the following POST parameters:\n
+        Required: token, contact_name, receiver's phone number, pickup time, dropoff time\n
+        Optional: pickup address, items, payment type.\n
+           default pickup address is sender's location.\n
+           default items is sender's package type.\n
+    Returns the created order or order list.
     """
 
     serializer_class = OrderSerializer
@@ -91,7 +98,7 @@ def send_SMS(order):
 	client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN) 
 	 
 	client.messages.create(
-		to=order.phone, 
+		to='+'+order.phone, 
 		from_="+12025688404", 
 		body="Please provide your address and confirm your order. http://api.pick.sa/order_confirm/%d/%s" % (order.id, order.key),  
 	)
@@ -119,4 +126,9 @@ def send_delivery_request(order):
 	}            
 
 	res = requests.post(url=url, headers=header, data=json.dumps(body))
+
+	# update the state of the order
+	order.status = 'Received'	
+	order.save()
+
 	print res.json(), '@@@@@@@@@@'		

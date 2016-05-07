@@ -14,9 +14,8 @@ router.register(r'orders', order.views.OrderViewSet, base_name='order')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
-    # url(r'^$', TemplateView.as_view(template_name='base.html')),
+    url(r'^email_verified/', TemplateView.as_view(template_name='email_verified.html')),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/', include('allauth.urls')),
     url(r'^order_completed /', order.views.order_completed),
     url(r'^order_confirm/(?P<id>\d+)/(?P<key>\w+)/$', order.views.confirm_order),
     url(r'^register_sender/$', sender.views.register_sender),
@@ -25,5 +24,6 @@ urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
-    url(r'^rest-auth/twitter/$', TwitterLogin.as_view(), name='twitter_login')    
+    url(r'^rest-auth/twitter/$', TwitterLogin.as_view(), name='twitter_login'),    
+    url(r'^accounts/', include('allauth.urls')),    
 ]

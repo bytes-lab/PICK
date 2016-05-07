@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load staticfiles %} 
+
+{% block body %}
+	<h3>Your email is successfully verified</h3>
+	<div class="well well-warning">
+		Now you can login via POST /rest-auth/login/ <br>
+		You have to provide some information via PUT /rest-auth/user/
+	</div>	
+{% endblock %}
