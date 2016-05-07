@@ -13,7 +13,7 @@ router.register(r'orders', order.views.OrderViewSet, base_name='order')
 
 
 urlpatterns = [
-    url(r'^api/', include(router.urls)),
+    url(r'^', include(router.urls)),
     url(r'^email_verified/', TemplateView.as_view(template_name='email_verified.html')),
     url(r'^admin/', admin.site.urls),
     url(r'^order_completed /', order.views.order_completed),
