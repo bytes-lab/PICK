@@ -45,3 +45,23 @@ curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -
 curl -H "Accept: application/json" -X GET http://api.pick.sam/accounts/instagram/login/?process=login
 
 curl -H "Authorization: Token 3d26fa5a3230dd009b67c848e810245e8fb2ea09" -X GET http://127.0.0.1/rest-auth/user/
+
+- Delivery testing
+
+73d53511-d156-4621-909f-e526f675701d
+
+
+curl -H "Accept: application/json indent: 4" -H "Content-type: application/json" -X POST -d \
+	'
+{
+    "apiKey":"73d53511-d156-4621-909f-e526f675701d",
+    "booking":{
+        "pickupDetail":{
+            "address":"51 luscombe st, brunswick, melbourne"
+        },
+        "dropoffDetail":{
+            "address":"101 collins st, 3000",
+        }
+    }
+}		\
+' https://app.getswift.co/api/v2/deliveries

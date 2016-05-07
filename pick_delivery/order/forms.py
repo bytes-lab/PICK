@@ -4,6 +4,8 @@ from .models import *
 
 
 class OrderForm(ModelForm):
+    # pickup_time = forms.DateTimeField(input_formats=["%Y-%m-%d %I:%M %p",])
+
     class Meta:
         model = Order
         fields = ['dropoff_addr', 'pickup_addr', 'contact_name', 'phone', 'pickup_time', 'dropoff_time', 'items'
@@ -21,11 +23,13 @@ class OrderForm(ModelForm):
             'phone': forms.TextInput(
                 attrs={'readonly': True, 'class': 'form-control'}
             ),
-            'pickup_time': forms.TextInput(
-                attrs={'readonly': True, 'class': 'form-control'}
+            'pickup_time': forms.DateTimeInput(
+                attrs={'readonly': True, 'class': 'form-control'},
+                format='%Y-%m-%d %I:%M %p',
             ),
-            'dropoff_time': forms.TextInput(
-                attrs={'readonly': True, 'class': 'form-control'}
+            'dropoff_time': forms.DateTimeInput(
+                attrs={'readonly': True, 'class': 'form-control'},
+                format='%Y-%m-%d %I:%M %p',
             ),        
             'items': forms.Select(
                 choices=ITEMS,             	

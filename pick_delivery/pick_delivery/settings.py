@@ -22,6 +22,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'jkxb*(y-^370213lsk3dbbtcrtitl6#tfu$i$z6b=+&&!+%pn='
 
+
+# twilio credentials
+TWILIO_ACCOUNT_SID = "AC20c84dff711e30719413dd2cd9d7469b" 
+TWILIO_AUTH_TOKEN = "7c41ee1f56e84bd3bb4ecf549cbe6eaf" 
+# swift key
+APIKEY_GETSWIFT = "73d53511-d156-4621-909f-e526f675701d"
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -74,7 +82,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DATETIME_FORMAT': "%Y-%m-%d %I:%M %p",
 }
 
 ROOT_URLCONF = 'pick_delivery.urls'

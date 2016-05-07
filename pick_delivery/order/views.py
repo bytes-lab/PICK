@@ -9,6 +9,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+
 from twilio.rest import TwilioRestClient 
 
 from rest_framework import status
@@ -22,12 +24,6 @@ from .serializers import OrderSerializer
 from sender.models import *
 from .models import *
 from .forms import *
-
-# put your twilio credentials here 
-ACCOUNT_SID = "AC20c84dff711e30719413dd2cd9d7469b" 
-AUTH_TOKEN = "7c41ee1f56e84bd3bb4ecf549cbe6eaf" 
-# put your swift key
-APIKEY_GETSWIFT = "622a6564-6c73-4350-94f5-072a406fd4b7"
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -51,7 +47,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 		# send SMS to confirm 
 		send_SMS(order)
 
-		print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (order.id, order.key), "#########3"
+		print "Please provide your address and confirm your order. http://api.pick.sam/order_confirm/%d/%s" % (order.id, order.key)
 
     def get_queryset(self):
         return Order.objects.filter(owner=self.request.user)
@@ -92,7 +88,7 @@ def send_SMS(order):
 	'''
 	send SMS to the customer to confirm the order using twilio
 	'''
-	client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
+	client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN) 
 	 
 	client.messages.create(
 		to=order.phone, 
@@ -102,12 +98,12 @@ def send_SMS(order):
 
 
 def send_delivery_request(order):
-	url = 'https://app.getswift.co/api/v2/quotes'
+	url = 'https://app.getswift.co/api/v2/deliveries'
 	header = {"Content-Type": "application/json"}
 	sender = Sender.objects.get(email=order.owner)
 
 	body = {
-		"apiKey": APIKEY_GETSWIFT,
+		"apiKey": settings.APIKEY_GETSWIFT,
 		"booking":{
 			"pickupDetail": {
 				"name": sender.first_name + ' ' + sender.last_name,
@@ -123,4 +119,4 @@ def send_delivery_request(order):
 	}            
 
 	res = requests.post(url=url, headers=header, data=json.dumps(body))
-	# print res.json()		
+	print res.json(), '@@@@@@@@@@'		
