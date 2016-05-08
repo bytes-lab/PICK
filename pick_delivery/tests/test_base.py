@@ -41,6 +41,8 @@ class BaseAPITestCase(object):
                 kwargs['HTTP_AUTHORIZATION'] = 'JWT %s' % self.token
             else:
                 kwargs['HTTP_AUTHORIZATION'] = 'Token %s' % self.token
+                # kwargs['AUTHORIZATION'] = 'Token %s' % self.token
+                # print kwargs, '@@@@@@@@'
 
         self.response = request_func(*args, **kwargs)
         is_json = bool(
@@ -62,28 +64,28 @@ class BaseAPITestCase(object):
     def patch(self, *args, **kwargs):
         return self.send_request('patch', *args, **kwargs)
 
-    # def put(self, *args, **kwargs):
-    #     return self.send_request('put', *args, **kwargs)
+    def put(self, *args, **kwargs):
+        return self.send_request('put', *args, **kwargs)
 
-    # def delete(self, *args, **kwargs):
-    #     return self.send_request('delete', *args, **kwargs)
+    def delete(self, *args, **kwargs):
+        return self.send_request('delete', *args, **kwargs)
 
-    # def options(self, *args, **kwargs):
-    #     return self.send_request('options', *args, **kwargs)
+    def options(self, *args, **kwargs):
+        return self.send_request('options', *args, **kwargs)
 
-    # def post_file(self, *args, **kwargs):
-    #     kwargs['content_type'] = MULTIPART_CONTENT
-    #     return self.send_request('post', *args, **kwargs)
+    def post_file(self, *args, **kwargs):
+        kwargs['content_type'] = MULTIPART_CONTENT
+        return self.send_request('post', *args, **kwargs)
 
-    # def get_file(self, *args, **kwargs):
-    #     content_type = None
-    #     if 'content_type' in kwargs:
-    #         content_type = kwargs.pop('content_type')
-    #     response = self.send_request('get', *args, **kwargs)
-    #     if content_type:
-    #         self.assertEqual(
-    #             bool(filter(lambda x: content_type in x, response._headers['content-type'])), True)
-    #     return response
+    def get_file(self, *args, **kwargs):
+        content_type = None
+        if 'content_type' in kwargs:
+            content_type = kwargs.pop('content_type')
+        response = self.send_request('get', *args, **kwargs)
+        if content_type:
+            self.assertEqual(
+                bool(filter(lambda x: content_type in x, response._headers['content-type'])), True)
+        return response
 
     def init(self):
         settings.DEBUG = True
@@ -96,11 +98,11 @@ class BaseAPITestCase(object):
         self.password_reset_url = reverse('rest_password_reset')
         self.user_url = reverse('rest_user_details')
         self.veirfy_email_url = reverse('rest_verify_email')
-        self.fb_login_url = reverse('fb_login')
+        self.order_url = '/orders/'
 
     def _login(self):
         payload = {
-            "username": self.USERNAME,
+            "email": self.EMAIL,
             "password": self.PASS
         }
         self.post(self.login_url, data=payload, status_code=status.HTTP_200_OK)

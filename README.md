@@ -346,3 +346,7 @@ Some endpoints for login
 	            access_token
 	            token_secret
 
+
+How to run test
+
+	python manage.py test tests

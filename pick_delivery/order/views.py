@@ -18,6 +18,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics, viewsets
 from rest_framework import permissions
+from rest_framework.renderers import JSONRenderer
 
 from .permissions import IsOwnerOnly
 from .serializers import OrderSerializer
@@ -44,11 +45,18 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
 		sender = Sender.objects.get(email=self.request.user)
-		pickup_addr = self.request.POST.get('pickup_addr') or sender.address
-		items = self.request.POST.get('items') or sender.package_type
+		content = serializer.validated_data
 
+		pickup_addr = sender.address
+		if 'pickup_addr' in content:
+			pickup_addr = content['pickup_addr']
+
+		items = sender.package_type
+		if 'items' in content:
+			items = content['items']
+		
 		salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-		key = hashlib.sha1(salt+self.request.POST.get('phone')).hexdigest()
+		key = hashlib.sha1(salt+content['phone']).hexdigest()
 
 		order = serializer.save(owner=self.request.user, pickup_addr=pickup_addr, items=items, key=key)
 		# send SMS to confirm 

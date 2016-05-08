@@ -47,7 +47,10 @@ curl -H "Accept: application/json" -X GET http://api.pick.sam/accounts/instagram
 curl -H "Authorization: Token 3d26fa5a3230dd009b67c848e810245e8fb2ea09" -X GET http://127.0.0.1/rest-auth/user/
 
 - orders
-curl -H "Authorization: Token 36c4debb62b1e6395e5626243342eaac6149f9c9" -X GET http://127.0.0.1/api/orders/
+curl -H "Authorization: Token ede3f699fb5ff1dbfecfd852b049eba6fd4f14f5" -X GET http://127.0.0.1/orders/
+
+curl -H "Accept: application/json" -H "Authorization: Token ede3f699fb5ff1dbfecfd852b049eba6fd4f14f5" -H "Content-type: application/json" -X POST -d '{"pickup_addr": "ottawa, Canada", "contact_name": "Waff Jason", "phone": "12025688555", "pickup_time": "2016-05-08 10:23 PM", "dropoff_time": "2016-05-09 11:13 AM", "payment_type": "COD"}' http://127.0.0.1/orders/
+
 
 - Delivery testing
 
