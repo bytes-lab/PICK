@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'jkxb*(y-^370213lsk3dbbtcrtitl6#tfu$i$z6b=+&&!+%pn='
-
+NEVERCACHE_KEY = "-&outap0_#5%035lkznw1rd5okape@jnup2!b*ezpu$g%v(#dv"
 
 # twilio credentials
 TWILIO_ACCOUNT_SID = "AC20c84dff711e30719413dd2cd9d7469b" 
@@ -197,4 +197,26 @@ LOGIN_REDIRECT_URL = "/email_verified/"
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'sender.serializers.UserDetailsSerializer',
+}
+
+ALLOWED_HOSTS = ["api.pick.sa"]
+# These settings are used by the default fabfile.py provided.
+# Check fabfile.py for defaults.
+
+FABRIC = {
+    "DEPLOY_TOOL": "git",  # Deploy with "git", "hg", or "rsync"
+    "SSH_USER": "root",  # VPS SSH username
+    "SSH_PASS":  '@5pick;', # SSH password (consider key-based authentication)    
+    "VIRTUALENV_HOME":  "/home/root/do", # Absolute remote path for virtualenvs
+    "PROJECT_NAME": "pick_delivery", # Unique identifier for project
+    "GUNICORN_PORT": 8000, # Port gunicorn will listen on
+    "REPO_URL": "https://github.com/jason5001001/Pick-backend.git", # Git or Mercurial remote repo URL for the project
+    "HOSTS": ["159.203.47.245"],  # The IP address of your VPS
+    "DOMAINS": ALLOWED_HOSTS,  # Edit domains in ALLOWED_HOSTS
+    "REQUIREMENTS_PATH": "pick_delivery/requirements.txt",  # Project's pip requirements
+    "LOCALE": "en_US.UTF-8",  # Should end with ".UTF-8"
+    "DB_PASS": "pickswift@123",  # Live database password
+    "ADMIN_PASS": "pickswift@123",  # Live admin user password
+    "SECRET_KEY": SECRET_KEY,
+    "NEVERCACHE_KEY": NEVERCACHE_KEY,
 }
