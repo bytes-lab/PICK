@@ -32,7 +32,7 @@ class Order(models.Model):
 	contact_name = models.CharField(max_length=250)
 	phone = models.CharField(max_length=20)
 	pickup_time = models.DateTimeField()
-	dropoff_time = models.DateTimeField(blank=True, null=True)
+	dropoff_time = models.DateTimeField(blank=True, null=True, default='')
 	items = models.CharField(choices=ITEMS, max_length=50)
 	payment_type = models.CharField(choices=PAYMENT_TYPE, max_length=50)
 	key = models.CharField(max_length=100)
