@@ -37,7 +37,8 @@ FABRIC = {
     "VIRTUALENV_HOME":  "/home/root/do", # Absolute remote path for virtualenvs
     "PROJECT_NAME": "pick_delivery", # Unique identifier for project
     "GUNICORN_PORT": 8000, # Port gunicorn will listen on
-    "REPO_URL": "https://github.com/jason5001001/pick_delivery.git", # Git or Mercurial remote repo URL for the project
+    # "REPO_URL": "https://github.com/jason5001001/pick_delivery.git", # Git or Mercurial remote repo URL for the project
+    "REPO_URL": "https://github.com/ModSoftio/Pick-backend.git",    
     "HOSTS": ["159.203.47.245"],  # The IP address of your VPS
     "DOMAINS": ALLOWED_HOSTS,  # Edit domains in ALLOWED_HOSTS
     "REQUIREMENTS_PATH": "requirements.txt",  # Project's pip requirements

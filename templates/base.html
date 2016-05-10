@@ -12,26 +12,6 @@
             <script src="{% static "lib/bootstrap/js/bootstrap.min.js" %}"></script>
         </head>
         <body>
-             <nav class="navbar navbar-inverse">
-              <div class="container-fluid">
-                <div class="navbar-header">
-                  <a class="navbar-brand" href="/">PICK delivery</a>
-                </div>
-                <ul class="nav navbar-nav">
-                  <li><a href="/orders/">Orders</a></li>
-                  <li><a href="#">Profile</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                  {% if user.is_authenticated %}
-                    <li><a href="/accounts/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                  {% else %}
-                    <li><a href="/accounts/signup/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                  {% endif %}
-                </ul>
-              </div>
-            </nav>
-
             <div class="container">
             
             {% block body %}
