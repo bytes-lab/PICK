@@ -78,6 +78,7 @@ def confirm_order(request, id, key):
 				order.save()				
 				# send delivery request api
 				send_delivery_request(order)
+				return render(request, 'confirm_order_done.html', {'track_link': order.track_link})		
 
 		order.phone = order.owner.phone		
 		context = {
@@ -134,9 +135,11 @@ def send_delivery_request(order):
 	}            
 
 	res = requests.post(url=url, headers=header, data=json.dumps(body))
+	res_json = res.json()
 
 	# update the state of the order
 	order.status = 'Received'	
+	order.track_link = res_json['delivery']['trackingUrls']['api']
 	order.save()
 
 	print res.json(), '@@@@@@@@@@'		

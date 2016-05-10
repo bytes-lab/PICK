@@ -526,7 +526,7 @@ def create():
         pip("gunicorn setproctitle psycopg2 "
             "django-compressor python-memcached")
     # Bootstrap the DB
-        manage("createdb --noinput --nodata")
+        # manage("createdb --noinput --nodata")
         python("from django.conf import settings;"
                "from django.contrib.sites.models import Site;"
                "Site.objects.filter(id=settings.SITE_ID).update(domain='%s');"

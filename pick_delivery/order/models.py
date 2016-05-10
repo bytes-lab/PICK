@@ -37,6 +37,7 @@ class Order(models.Model):
 	payment_type = models.CharField(choices=PAYMENT_TYPE, max_length=50)
 	key = models.CharField(max_length=100)
 	status = models.CharField(choices=STATUS, default='Initial', max_length=20)
-
+	track_link = models.CharField(max_length=200, blank=True, null=True)
+	
 	def __str__(self):
 		return self.contact_name

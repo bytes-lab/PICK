@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist
 
-from .forms import *
 from .models import *
 
 
