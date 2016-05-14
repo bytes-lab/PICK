@@ -7,3 +7,4 @@ django-filter
 django-rest-swagger
 twilio
 django-rest-auth
+geopy

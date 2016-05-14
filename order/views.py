@@ -1,6 +1,7 @@
 import hashlib, datetime, random
 import requests
 import json
+import re
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from twilio.rest import TwilioRestClient 
+from geopy.geocoders import Nominatim
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -46,7 +48,6 @@ class OrderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
 		sender = Sender.objects.get(email=self.request.user)
 		content = serializer.validated_data
-
 		pickup_addr = sender.address
 		if 'pickup_addr' in content:
 			pickup_addr = content['pickup_addr']
@@ -71,20 +72,25 @@ class OrderViewSet(viewsets.ModelViewSet):
 def confirm_order(request, id, key):
 	try:
 		order = Order.objects.get(id=id, key=key)
-	
+		
 		if request.method == 'POST':
-			if request.POST.get('dropoff_addr'):
-				order.dropoff_addr=request.POST.get('dropoff_addr')
+			orderform = OrderForm(request.POST)
+			if orderform.is_valid():
+				post = orderform.save(commit=False)			
+				order.dropoff_addr=get_real_address(post.dropoff_addr)
+				order.dropoff_time=post.dropoff_time
 				order.save()				
 				# send delivery request api
 				send_delivery_request(order)
 				return render(request, 'confirm_order_done.html', {'track_link': order.track_link})		
+		else:
+			orderform = OrderForm(initial=model_to_dict(order))
 
-		order.phone = order.owner.phone		
+		print orderform	
 		context = {
 			'id': id,
 			'key': key,
-			'orderform': OrderForm(initial=model_to_dict(order)),
+			'orderform': orderform,
 		}
 
 		return render(request, 'confirm_order.html', context)		
@@ -99,6 +105,17 @@ def order_completed(request):
 	print 'Order is successfully finished'
 	print request.json()
 
+def get_real_address(address_location):
+	'''
+	if the argument is location, get the real address from it
+	'''
+	if re.search(r'^LatLng\(.*\)$', address_location):
+		location = address_location[7:-1]
+		geolocator = Nominatim()
+		address = geolocator.reverse(location)
+		return address.address
+	else:
+		return address_location
 
 def send_SMS(order):
 	'''

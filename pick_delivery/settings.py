@@ -84,7 +84,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
-    'DATETIME_FORMAT': "%Y-%m-%d %I:%M %p",
+    # 'DATETIME_FORMAT': "%Y-%m-%d %I:%M %p",
 }
 
 ROOT_URLCONF = 'pick_delivery.urls'

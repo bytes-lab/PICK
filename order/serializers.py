@@ -5,7 +5,7 @@ from .models import Order
 class OrderSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.email')
     pickup_time = serializers.DateTimeField(input_formats=["%Y-%m-%d %I:%M %p",])
-    dropoff_time = serializers.DateTimeField(input_formats=["%Y-%m-%d %I:%M %p",] ,required=False)
+    dropoff_time = serializers.DateTimeField(allow_null=True, input_formats=["%Y-%m-%d %I:%M %p",], required=False)
     status = serializers.ReadOnlyField()
 
     class Meta:
