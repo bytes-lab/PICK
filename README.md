@@ -1,8 +1,6 @@
-# Pick-backend
+## Pick-backend
 
-These are the project specifications. Our Service is called Pick.
 Pick is uber style parcel delivery. It allows users to send parcels from anywhere to anywhere.
-
 
 Delivery management is going to be done using external service called getswift.co.
 

@@ -86,7 +86,7 @@ def confirm_order(request, id, key):
 		else:
 			orderform = OrderForm(initial=model_to_dict(order))
 
-		print orderform	
+		# print orderform	
 		context = {
 			'id': id,
 			'key': key,
